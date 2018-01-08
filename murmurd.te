@@ -1,0 +1,87 @@
+policy_module(murmurd, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+#permissive murmurd_t;
+
+type murmurd_t;
+type murmurd_exec_t;
+init_daemon_domain(murmurd_t, murmurd_exec_t)
+
+type murmurd_config_t;
+files_config_file(murmurd_config_t)
+
+type murmurd_db_t;
+files_type(murmurd_db_t)
+
+type murmurd_unit_t;
+systemd_unit_file(murmurd_unit_t)
+
+type murmurd_var_lib_t;
+files_type(murmurd_var_lib_t)
+
+type murmurd_var_run_t;
+files_pid_file(murmurd_var_run_t)
+
+type murmurd_log_t;
+logging_log_file(murmurd_log_t)
+
+type murmurd_tmp_t;
+files_tmp_file(murmurd_tmp_t)
+
+type murmurd_port_t;
+corenet_port(murmurd_port_t)
+
+########################################
+#
+# murmurd local policy
+#
+allow murmurd_t self:netlink_route_socket create_netlink_socket_perms;
+allow murmurd_t self:process { execmem execstack setsched };
+allow murmurd_t self:tcp_socket create_stream_socket_perms;
+allow murmurd_t self:udp_socket create_stream_socket_perms;
+allow murmurd_t self:unix_dgram_socket create_socket_perms;
+
+allow murmurd_t murmurd_port_t:tcp_socket name_bind;
+allow murmurd_t murmurd_port_t:udp_socket name_bind;
+
+allow murmurd_t murmurd_exec_t:dir search_dir_perms;
+
+allow murmurd_t murmurd_config_t:dir list_dir_perms;
+read_files_pattern(murmurd_t, murmurd_config_t, murmurd_config_t)
+
+manage_files_pattern(murmurd_t, murmurd_db_t, murmurd_db_t)
+filetrans_pattern(murmurd_t, murmurd_var_lib_t, murmurd_db_t, file, "murmur.sqlite")
+
+manage_dirs_pattern(murmurd_t, murmurd_var_lib_t, murmurd_var_lib_t)
+manage_files_pattern(murmurd_t, murmurd_var_lib_t, murmurd_var_lib_t)
+files_var_lib_filetrans(murmurd_t, murmurd_var_lib_t, { dir file })
+
+manage_dirs_pattern(murmurd_t, murmurd_var_run_t, murmurd_var_run_t)
+manage_files_pattern(murmurd_t, murmurd_var_run_t, murmurd_var_run_t)
+files_pid_filetrans(murmurd_t, murmurd_var_run_t, { dir file })
+
+manage_dirs_pattern(murmurd_t, murmurd_log_t, murmurd_log_t)
+manage_files_pattern(murmurd_t, murmurd_log_t, murmurd_log_t)
+logging_log_filetrans(murmurd_t, murmurd_log_t, { dir file })
+
+manage_dirs_pattern(murmurd_t, murmurd_tmp_t, murmurd_tmp_t)
+manage_files_pattern(murmurd_t, murmurd_tmp_t, murmurd_tmp_t)
+files_tmp_filetrans(murmurd_t, murmurd_tmp_t, { dir file })
+
+kernel_read_network_state(murmurd_t)
+kernel_read_system_state(murmurd_t)
+
+dbus_read_pid_files(murmurd_t)
+dbus_send_system_bus(murmurd_t)
+dbus_system_bus_client(murmurd_t)
+
+corenet_tcp_bind_generic_node(murmurd_t)
+corenet_udp_bind_generic_node(murmurd_t)
+
+# For reading /etc/ssl/pki/certs?
+fs_getattr_xattr_fs(murmurd_t)
+
+miscfiles_read_generic_certs(murmurd_t)

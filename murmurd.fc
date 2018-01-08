@@ -1,0 +1,14 @@
+/etc/murmur.ini				--	gen_context(system_u:object_r:murmurd_config_t,s0)
+
+/etc/systemd/system/murmurd.*		--      gen_context(system_u:object_r:murmurd_unit_t,s0)
+/usr/lib/systemd/system/murmurd.*	--     	gen_context(system_u:object_r:murmurd_unit_t,s0)
+
+#/usr/local/murmur/murmur.x86		--	gen_context(system_u:object_r:murmurd_exec_t,s0)
+/usr/local/murmur(/.*)?				gen_context(system_u:object_r:murmurd_exec_t,s0)
+
+/var/lib/murmur(/.*)?				gen_context(system_u:object_r:murmurd_var_lib_t,s0)
+/var/lib/murmur/.*.sqlite		--	gen_context(system_u:object_r:murmurd_db_t,s0)
+
+/var/log/murmur(/.*)?				gen_context(system_u:object_r:murmurd_log_t,s0)
+
+/var/run/murmur(/.*)?				gen_context(system_u:object_r:murmurd_var_run_t,s0)

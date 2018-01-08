@@ -1,0 +1,75 @@
+## <summary>policy for murmurd</summary>
+
+########################################
+## <summary>
+##	Execute murmurd_exec_t in the murmurd domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`murmurd_domtrans',`
+	gen_require(`
+		type murmurd_t, murmurd_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, murmurd_exec_t, murmurd_t)
+')
+
+######################################
+## <summary>
+##	Execute murmurd in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`murmurd_exec',`
+	gen_require(`
+		type murmurd_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, murmurd_exec_t)
+')
+
+#######################################
+## <summary>
+##	Send a generic signal to murmurd.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`murmurd_signal',`
+	gen_require(`
+		type murmurd_t;
+	')
+
+	allow $1 murmurd_t:process signal;
+')
+
+########################################
+## <summary>
+##	Send a SIGUSR1 signal to murmurd. For use with letsencrypt auto-renew
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`murmurd_sigusr1',`
+	gen_require(`
+		type murmurd_t;
+	')
+
+	allow $1 murmurd_t:process sigusr1;
+')
