@@ -42,7 +42,7 @@ ps -eZ | grep murmur
 Ensure you have the `selinux-policy-devel` package installed.
 ```sh
 # Ensure you have the devel packages
-yum install selinux-policy-devel
+yum install selinux-policy-devel setools-console
 # Change to the directory containing the .if, .fc & .te files
 cd mumble-selinux
 make -f /usr/share/selinux/devel/Makefile murmurd.pp
@@ -57,6 +57,7 @@ semodule -i murmurd.pp
 
 ```sh
 ausearch -m avc,user_avc,selinux_err -ts recent | audit2allow -R
-# If you get a `could not open interface info [/var/lib/sepolgen/interface_info]` error. Ensure policycoreutils-devel is installed and/or run:
+# If you get a `could not open interface info [/var/lib/sepolgen/interface_info]` error. 
+Ensure policycoreutils-devel is installed and/or run:
 `sepolgen-ifgen`
 ```
