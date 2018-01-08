@@ -57,7 +57,6 @@ semodule -i murmurd.pp
 
 ```sh
 ausearch -m avc,user_avc,selinux_err -ts recent | audit2allow -R
-# If you get a `could not open interface info [/var/lib/sepolgen/interface_info]` error. 
-Ensure policycoreutils-devel is installed and/or run:
-`sepolgen-ifgen`
 ```
+If you get a could not open interface info [/var/lib/sepolgen/interface_info] error. 
+Ensure policycoreutils-devel is installed and/or run: `sepolgen-ifgen`
